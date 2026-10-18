@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Top 100 Global Ranking</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    :root {
+      --bg: #0a0c10;
+      --surface: #12161f;
+      --surface-2: #171c28;
+      --line: #232a3a;
+      --line-soft: #1a2130;
+      --text: #e8edf5;
+      --text-dim: #8b97ad;
+      --text-faint: #5a6680;
+      --accent: #4d7cfe;
+      --gold: #d4af6a;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, 'Inter', 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+      padding: 28px 16px 56px;
+      display: flex;
+      justify-content: center;
+      line-height: 1.4;
+    }
+
+    .board {
+      width: 100%;
+      max-width: 560px;
+    }
+
+    /* ---------- Header ---------- */
+    .header {
+      margin-bottom: 28px;
+      padding: 0 4px;
+    }
+
+    .header-eyebrow {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .header-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .header-title em {
+      font-style: normal;
+      color: var(--text-faint);
+      font-weight: 500;
+    }
+
+    /* ---------- Champion card ---------- */
+    .champion {
+      position: relative;
+      background: linear-gradient(160deg, #1a2138 0%, #12161f 55%, #0d1017 100%);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 26px 22px 24px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .champion::before {
+      content: '';
+      position: absolute;
+      top: -60%;
+      left: -10%;
+      width: 70%;
+      height: 220%;
+      background: radial-gradient(ellipse, rgba(77, 124, 254, 0.16), transparent 65%);
+      pointer-events: none;
+    }
+
+    .champion-pic {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .champion-pic img {
+      width: 92px;
+      height: 92px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+      border: 2px solid var(--gold);
+      background: var(--surface-2);
+    }
+
+    .champion-pic::after {
+      content: '1';
+      position: absolute;
+      bottom: -6px;
+      right: -6px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--gold);
+      color: #1a1408;
+      font-size: 0.95rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 3px solid var(--bg);
+    }
+
+    .champion-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .champion-label {
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+
+    .champion-name-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .champion-name {
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .flag-icon {
+      font-size: 1.3rem;
+      line-height: 1;
+      flex-shrink: 0;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4));
+    }
+
+    .champion-caption {
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--gold);
+      letter-spacing: 0.06em;
+      opacity: 0.85;
+      margin-bottom: 6px;
+      font-style: italic;
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .champion-pts {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .champion-pts strong {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--gold);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .champion-pts span {
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--text-dim);
+      letter-spacing: 0.04em;
+    }
+
+    /* ---------- Runners-up (2 & 3) — stacked rows ---------- */
+    .runners {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 32px;
+    }
+
+    .runner {
+      background: var(--surface);
+      border: 1px solid var(--line-soft);
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .runner-pic {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .runner-pic img {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+      border: 1.5px solid var(--line);
+      background: var(--surface-2);
+    }
+
+    .runner-pic::after {
+      content: attr(data-rank);
+      position: absolute;
+      bottom: -4px;
+      right: -4px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--surface-2);
+      color: var(--text-dim);
+      font-size: 0.68rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--bg);
+    }
+
+    .runner-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .runner-name-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 2px;
+    }
+
+    .runner-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .runner-flag {
+      font-size: 1rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .runner-caption {
+      font-size: 0.65rem;
+      font-weight: 500;
+      color: var(--gold);
+      letter-spacing: 0.06em;
+      opacity: 0.8;
+      margin-bottom: 2px;
+      font-style: italic;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .runner-pts {
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text-dim);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.02em;
+    }
+
+    /* ---------- List ---------- */
+    .list-head {
+      display: grid;
+      grid-template-columns: 42px 1fr auto;
+      gap: 12px;
+      padding: 0 14px 10px;
+      border-bottom: 1px solid var(--line-soft);
+      margin-bottom: 4px;
+    }
+
+    .list-head span {
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+    }
+
+    .list-head span:last-child {
+      text-align: right;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 42px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 11px 14px;
+      border-radius: 10px;
+      transition: background 0.15s ease;
+    }
+
+    .row:hover {
+      background: var(--surface);
+    }
+
+    .row-rank {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-faint);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.02em;
+    }
+
+    .row-profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .row-profile img {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+      border: 1px solid var(--line-soft);
+      background: var(--surface-2);
+      flex-shrink: 0;
+    }
+
+    .row-name-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .row-name {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .row-flag {
+      font-size: 0.9rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .row-caption {
+      font-size: 0.62rem;
+      font-weight: 500;
+      color: var(--gold);
+      letter-spacing: 0.05em;
+      opacity: 0.7;
+      font-style: italic;
+      margin-top: 1px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .row-pts {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-dim);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.02em;
+      text-align: right;
+    }
+
+    /* ---------- Mobile tweaks ---------- */
+    @media (max-width: 380px) {
+      body { padding: 20px 10px 40px; }
+
+      .header-title { font-size: 1.5rem; }
+
+      .champion { padding: 22px 18px 20px; gap: 14px; }
+      .champion-pic img { width: 76px; height: 76px; }
+      .champion-name { font-size: 1.1rem; }
+      .champion-pts strong { font-size: 1.15rem; }
+      .champion-caption { font-size: 0.65rem; }
+      .flag-icon { font-size: 1.1rem; }
+
+      .runner { padding: 12px 14px; gap: 12px; }
+      .runner-pic img { width: 46px; height: 46px; }
+      .runner-caption { font-size: 0.6rem; }
+      .runner-flag { font-size: 0.9rem; }
+
+      .row { padding: 10px 10px; gap: 10px; }
+      .row-rank { font-size: 0.78rem; }
+      .row-profile { gap: 10px; }
+      .row-profile img { width: 30px; height: 30px; }
+      .row-name { font-size: 0.85rem; }
+      .row-pts { font-size: 0.8rem; }
+      .row-flag { font-size: 0.8rem; }
+      .row-caption { font-size: 0.55rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="board">
+    <header class="header">
+      <div class="header-eyebrow">Global Ranking</div>
+      <h1 class="header-title">Top 100 <em>Players</em></h1>
+    </header>
+
+    <section id="podium"></section>
+
+    <div class="list-head">
+      <span>Rank</span>
+      <span>Player</span>
+      <span>Points</span>
+    </div>
+
+    <div id="list"></div>
+  </div>
+
+  <script>
+    // ============================================================
+    //  FIXED JSON DATA — 100 players, sorted by points (desc)
+    //  Every player now has a caption (max 20 chars)
+    // ============================================================
+    const PLAYERS_JSON = [
+      { "rank": 1,  "name": "Liam Smith",        "pts": 18920, "avatar": "https://randomuser.me/api/portraits/men/1.jpg",   "flag": "🇺🇸", "caption": "Skill Issue" },
+      { "rank": 2,  "name": "Olivia Johnson",    "pts": 18752, "avatar": "https://randomuser.me/api/portraits/women/2.jpg", "flag": "🇬🇧", "caption": "GG EZ" },
+      { "rank": 3,  "name": "Noah Williams",     "pts": 18510, "avatar": "https://randomuser.me/api/portraits/men/3.jpg",   "flag": "🇨🇦", "caption": "Clutch King" },
+      { "rank": 4,  "name": "Emma Brown",        "pts": 18240, "avatar": "https://randomuser.me/api/portraits/women/4.jpg", "flag": "🇦🇺", "caption": "No Mercy" },
+      { "rank": 5,  "name": "Oliver Jones",      "pts": 18001, "avatar": "https://randomuser.me/api/portraits/men/5.jpg",   "flag": "🇩🇪", "caption": "Apex Predator" },
+      { "rank": 6,  "name": "Ava Garcia",        "pts": 17785, "avatar": "https://randomuser.me/api/portraits/women/6.jpg", "flag": "🇫🇷", "caption": "Rookie Slayer" },
+      { "rank": 7,  "name": "Elijah Miller",     "pts": 17590, "avatar": "https://randomuser.me/api/portraits/men/7.jpg",   "flag": "🇪🇸", "caption": "Crown Holder" },
+      { "rank": 8,  "name": "Charlotte Davis",   "pts": 17420, "avatar": "https://randomuser.me/api/portraits/women/8.jpg", "flag": "🇮🇹", "caption": "Final Boss" },
+      { "rank": 9,  "name": "William Rodriguez","pts": 17255, "avatar": "https://randomuser.me/api/portraits/men/9.jpg",   "flag": "🇧🇷", "caption": "Untouchable" },
+      { "rank": 10, "name": "Sophia Martinez",   "pts": 17088, "avatar": "https://randomuser.me/api/portraits/women/10.jpg","flag": "🇯🇵", "caption": "Sharp Shot" },
+      { "rank": 11, "name": "James Hernandez",   "pts": 16934, "avatar": "https://randomuser.me/api/portraits/men/11.jpg",  "flag": "🇰🇷", "caption": "Ice Cold" },
+      { "rank": 12, "name": "Amelia Lopez",      "pts": 16782, "avatar": "https://randomuser.me/api/portraits/women/12.jpg","flag": "🇨🇳", "caption": "Fire Starter" },
+      { "rank": 13, "name": "Benjamin Gonzalez", "pts": 16630, "avatar": "https://randomuser.me/api/portraits/men/13.jpg",  "flag": "🇮🇳", "caption": "Comeback King" },
+      { "rank": 14, "name": "Isabella Wilson",   "pts": 16488, "avatar": "https://randomuser.me/api/portraits/women/14.jpg","flag": "🇲🇽", "caption": "Meta Breaker" },
+      { "rank": 15, "name": "Lucas Anderson",    "pts": 16320, "avatar": "https://randomuser.me/api/portraits/men/15.jpg",  "flag": "🇳🇱", "caption": "Top Fragger" },
+      { "rank": 16, "name": "Mia Thomas",        "pts": 16175, "avatar": "https://randomuser.me/api/portraits/women/16.jpg","flag": "🇸🇪", "caption": "Undefeated" },
+      { "rank": 17, "name": "Henry Taylor",      "pts": 16012, "avatar": "https://randomuser.me/api/portraits/men/17.jpg",  "flag": "🇳🇴", "caption": "Pressure Proof" },
+      { "rank": 18, "name": "Evelyn Moore",      "pts": 15860, "avatar": "https://randomuser.me/api/portraits/women/18.jpg","flag": "🇩🇰", "caption": "Last Stand" },
+      { "rank": 19, "name": "Alexander Jackson", "pts": 15708, "avatar": "https://randomuser.me/api/portraits/men/19.jpg",  "flag": "🇫🇮", "caption": "Double Kill" },
+      { "rank": 20, "name": "Harper Martin",     "pts": 15555, "avatar": "https://randomuser.me/api/portraits/women/20.jpg","flag": "🇵🇱", "caption": "Quad Feed" },
+      { "rank": 21, "name": "Daniel Lee",        "pts": 15402, "avatar": "https://randomuser.me/api/portraits/men/21.jpg",  "flag": "🇵🇹", "caption": "Headshot Hero" },
+      { "rank": 22, "name": "Luna Perez",        "pts": 15250, "avatar": "https://randomuser.me/api/portraits/women/22.jpg","flag": "🇨🇭", "caption": "Clutch Master" },
+      { "rank": 23, "name": "Michael Thompson",  "pts": 15100, "avatar": "https://randomuser.me/api/portraits/men/23.jpg",  "flag": "🇦🇹", "caption": "Lethal" },
+      { "rank": 24, "name": "Camila White",      "pts": 14948, "avatar": "https://randomuser.me/api/portraits/women/24.jpg","flag": "🇧🇪", "caption": "Relentless" },
+      { "rank": 25, "name": "Ethan Harris",      "pts": 14795, "avatar": "https://randomuser.me/api/portraits/men/25.jpg",  "flag": "🇦🇷", "caption": "Shadow" },
+      { "rank": 26, "name": "Gianna Sanchez",    "pts": 14642, "avatar": "https://randomuser.me/api/portraits/women/26.jpg","flag": "🇨🇱", "caption": "Phantom" },
+      { "rank": 27, "name": "Matthew Clark",     "pts": 14490, "avatar": "https://randomuser.me/api/portraits/men/27.jpg",  "flag": "🇨🇴", "caption": "Titan" },
+      { "rank": 28, "name": "Eleanor Ramirez",   "pts": 14338, "avatar": "https://randomuser.me/api/portraits/women/28.jpg","flag": "🇿🇦", "caption": "Legend" },
+      { "rank": 29, "name": "Jackson Lewis",     "pts": 14185, "avatar": "https://randomuser.me/api/portraits/men/29.jpg",  "flag": "🇳🇬", "caption": "Mythic" },
+      { "rank": 30, "name": "Aria Robinson",     "pts": 14032, "avatar": "https://randomuser.me/api/portraits/women/30.jpg","flag": "🇪🇬", "caption": "GOAT" },
+      { "rank": 31, "name": "Sebastian Walker",  "pts": 13880, "avatar": "https://randomuser.me/api/portraits/men/31.jpg",  "flag": "🇹🇷", "caption": "Sharpshooter" },
+      { "rank": 32, "name": "Scarlett Young",    "pts": 13728, "avatar": "https://randomuser.me/api/portraits/women/32.jpg","flag": "🇷🇺", "caption": "Warlord" },
+      { "rank": 33, "name": "Jack Allen",        "pts": 13575, "avatar": "https://randomuser.me/api/portraits/men/33.jpg",  "flag": "🇺🇦", "caption": "Savage" },
+      { "rank": 34, "name": "Penelope King",     "pts": 13422, "avatar": "https://randomuser.me/api/portraits/women/34.jpg","flag": "🇷🇴", "caption": "Vicious" },
+      { "rank": 35, "name": "Aiden Wright",      "pts": 13270, "avatar": "https://randomuser.me/api/portraits/men/35.jpg",  "flag": "🇭🇺", "caption": "Silent Killer" },
+      { "rank": 36, "name": "Layla Scott",       "pts": 13118, "avatar": "https://randomuser.me/api/portraits/women/36.jpg","flag": "🇨🇿", "caption": "Deathwish" },
+      { "rank": 37, "name": "Owen Torres",       "pts": 12965, "avatar": "https://randomuser.me/api/portraits/men/37.jpg",  "flag": "🇮🇪", "caption": "Overkill" },
+      { "rank": 38, "name": "Chloe Nguyen",      "pts": 12812, "avatar": "https://randomuser.me/api/portraits/women/38.jpg","flag": "🇳🇿", "caption": "Rampage" },
+      { "rank": 39, "name": "Samuel Hill",       "pts": 12660, "avatar": "https://randomuser.me/api/portraits/men/39.jpg",  "flag": "🇸🇬", "caption": "Domination" },
+      { "rank": 40, "name": "Victoria Flores",   "pts": 12508, "avatar": "https://randomuser.me/api/portraits/women/40.jpg","flag": "🇲🇾", "caption": "Exterminator" },
+      { "rank": 41, "name": "Ryan Green",        "pts": 12355, "avatar": "https://randomuser.me/api/portraits/men/41.jpg",  "flag": "🇹🇭", "caption": "Annihilator" },
+      { "rank": 42, "name": "Madison Adams",     "pts": 12202, "avatar": "https://randomuser.me/api/portraits/women/42.jpg","flag": "🇻🇳", "caption": "Destroyer" },
+      { "rank": 43, "name": "Nathan Nelson",     "pts": 12050, "avatar": "https://randomuser.me/api/portraits/men/43.jpg",  "flag": "🇵🇭", "caption": "Conqueror" },
+      { "rank": 44, "name": "Nora Baker",        "pts": 11898, "avatar": "https://randomuser.me/api/portraits/women/44.jpg","flag": "🇮🇩", "caption": "Vanquisher" },
+      { "rank": 45, "name": "Leo Hall",          "pts": 11745, "avatar": "https://randomuser.me/api/portraits/men/45.jpg",  "flag": "🇸🇦", "caption": "Executioner" },
+      { "rank": 46, "name": "Riley Rivera",      "pts": 11592, "avatar": "https://randomuser.me/api/portraits/women/46.jpg","flag": "🇦🇪", "caption": "Slaughterer" },
+      { "rank": 47, "name": "Caleb Campbell",    "pts": 11440, "avatar": "https://randomuser.me/api/portraits/men/47.jpg",  "flag": "🇮🇱", "caption": "Butcher" },
+      { "rank": 48, "name": "Zoey Mitchell",     "pts": 11288, "avatar": "https://randomuser.me/api/portraits/women/48.jpg","flag": "🇬🇷", "caption": "Reaper" },
+      { "rank": 49, "name": "Isaac Carter",      "pts": 11135, "avatar": "https://randomuser.me/api/portraits/men/49.jpg",  "flag": "🇺🇸", "caption": "Grim" },
+      { "rank": 50, "name": "Hannah Roberts",    "pts": 10982, "avatar": "https://randomuser.me/api/portraits/women/50.jpg","flag": "🇬🇧", "caption": "Specter" },
+      { "rank": 51, "name": "Liam Johnson",      "pts": 10830, "avatar": "https://randomuser.me/api/portraits/men/51.jpg",  "flag": "🇨🇦", "caption": "Wraith" },
+      { "rank": 52, "name": "Olivia Williams",   "pts": 10678, "avatar": "https://randomuser.me/api/portraits/women/52.jpg","flag": "🇦🇺", "caption": "Banshee" },
+      { "rank": 53, "name": "Noah Brown",        "pts": 10525, "avatar": "https://randomuser.me/api/portraits/men/53.jpg",  "flag": "🇩🇪", "caption": "Vortex" },
+      { "rank": 54, "name": "Emma Jones",        "pts": 10372, "avatar": "https://randomuser.me/api/portraits/women/54.jpg","flag": "🇫🇷", "caption": "Cyclone" },
+      { "rank": 55, "name": "Oliver Garcia",     "pts": 10220, "avatar": "https://randomuser.me/api/portraits/men/55.jpg",  "flag": "🇪🇸", "caption": "Blizzard" },
+      { "rank": 56, "name": "Ava Miller",        "pts": 10068, "avatar": "https://randomuser.me/api/portraits/women/56.jpg","flag": "🇮🇹", "caption": "Inferno" },
+      { "rank": 57, "name": "Elijah Davis",      "pts": 9915,  "avatar": "https://randomuser.me/api/portraits/men/57.jpg",  "flag": "🇧🇷", "caption": "Volcano" },
+      { "rank": 58, "name": "Charlotte Rodriguez","pts": 9762, "avatar": "https://randomuser.me/api/portraits/women/58.jpg","flag": "🇯🇵", "caption": "Earthquake" },
+      { "rank": 59, "name": "William Martinez",  "pts": 9610,  "avatar": "https://randomuser.me/api/portraits/men/59.jpg",  "flag": "🇰🇷", "caption": "Tsunami" },
+      { "rank": 60, "name": "Sophia Hernandez",  "pts": 9458,  "avatar": "https://randomuser.me/api/portraits/women/60.jpg","flag": "🇨🇳", "caption": "Hurricane" },
+      { "rank": 61, "name": "James Lopez",       "pts": 9305,  "avatar": "https://randomuser.me/api/portraits/men/61.jpg",  "flag": "🇮🇳", "caption": "Tornado" },
+      { "rank": 62, "name": "Amelia Gonzalez",   "pts": 9152,  "avatar": "https://randomuser.me/api/portraits/women/62.jpg","flag": "🇲🇽", "caption": "Thunder" },
+      { "rank": 63, "name": "Benjamin Wilson",   "pts": 9000,  "avatar": "https://randomuser.me/api/portraits/men/63.jpg",  "flag": "🇳🇱", "caption": "Lightning" },
+      { "rank": 64, "name": "Isabella Anderson", "pts": 8848,  "avatar": "https://randomuser.me/api/portraits/women/64.jpg","flag": "🇸🇪", "caption": "Storm" },
+      { "rank": 65, "name": "Lucas Thomas",      "pts": 8695,  "avatar": "https://randomuser.me/api/portraits/men/65.jpg",  "flag": "🇳🇴", "caption": "Tempest" },
+      { "rank": 66, "name": "Mia Taylor",        "pts": 8542,  "avatar": "https://randomuser.me/api/portraits/women/66.jpg","flag": "🇩🇰", "caption": "Fury" },
+      { "rank": 67, "name": "Henry Moore",       "pts": 8390,  "avatar": "https://randomuser.me/api/portraits/men/67.jpg",  "flag": "🇫🇮", "caption": "Wrath" },
+      { "rank": 68, "name": "Evelyn Jackson",    "pts": 8238,  "avatar": "https://randomuser.me/api/portraits/women/68.jpg","flag": "🇵🇱", "caption": "Ruin" },
+      { "rank": 69, "name": "Alexander Martin",  "pts": 8085,  "avatar": "https://randomuser.me/api/portraits/men/69.jpg",  "flag": "🇵🇹", "caption": "Chaos" },
+      { "rank": 70, "name": "Harper Lee",        "pts": 7932,  "avatar": "https://randomuser.me/api/portraits/women/70.jpg","flag": "🇨🇭", "caption": "Anarchy" },
+      { "rank": 71, "name": "Daniel Perez",      "pts": 7780,  "avatar": "https://randomuser.me/api/portraits/men/71.jpg",  "flag": "🇦🇹", "caption": "Mayhem" },
+      { "rank": 72, "name": "Luna Thompson",     "pts": 7628,  "avatar": "https://randomuser.me/api/portraits/women/72.jpg","flag": "🇧🇪", "caption": "Carnage" },
+      { "rank": 73, "name": "Michael White",     "pts": 7475,  "avatar": "https://randomuser.me/api/portraits/men/73.jpg",  "flag": "🇦🇷", "caption": "Massacre" },
+      { "rank": 74, "name": "Camila Harris",     "pts": 7322,  "avatar": "https://randomuser.me/api/portraits/women/74.jpg","flag": "🇨🇱", "caption": "Bloodbath" },
+      { "rank": 75, "name": "Ethan Sanchez",     "pts": 7170,  "avatar": "https://randomuser.me/api/portraits/men/75.jpg",  "flag": "🇨🇴", "caption": "Genocide" },
+      { "rank": 76, "name": "Gianna Clark",      "pts": 7018,  "avatar": "https://randomuser.me/api/portraits/women/76.jpg","flag": "🇿🇦", "caption": "Oblivion" },
+      { "rank": 77, "name": "Matthew Ramirez",   "pts": 6865,  "avatar": "https://randomuser.me/api/portraits/men/77.jpg",  "flag": "🇳🇬", "caption": "Extinction" },
+      { "rank": 78, "name": "Eleanor Lewis",     "pts": 6712,  "avatar": "https://randomuser.me/api/portraits/women/78.jpg","flag": "🇪🇬", "caption": "Apocalypse" },
+      { "rank": 79, "name": "Jackson Robinson",  "pts": 6560,  "avatar": "https://randomuser.me/api/portraits/men/79.jpg",  "flag": "🇹🇷", "caption": "Armageddon" },
+      { "rank": 80, "name": "Aria Walker",       "pts": 6408,  "avatar": "https://randomuser.me/api/portraits/women/80.jpg","flag": "🇷🇺", "caption": "Ragnarok" },
+      { "rank": 81, "name": "Sebastian Young",   "pts": 6255,  "avatar": "https://randomuser.me/api/portraits/men/81.jpg",  "flag": "🇺🇦", "caption": "Doomsday" },
+      { "rank": 82, "name": "Scarlett Allen",    "pts": 6102,  "avatar": "https://randomuser.me/api/portraits/women/82.jpg","flag": "🇷🇴", "caption": "Judgment" },
+      { "rank": 83, "name": "Jack King",         "pts": 5950,  "avatar": "https://randomuser.me/api/portraits/men/83.jpg",  "flag": "🇭🇺", "caption": "Retribution" },
+      { "rank": 84, "name": "Penelope Wright",   "pts": 5798,  "avatar": "https://randomuser.me/api/portraits/women/84.jpg","flag": "🇨🇿", "caption": "Vengeance" },
+      { "rank": 85, "name": "Aiden Scott",       "pts": 5645,  "avatar": "https://randomuser.me/api/portraits/men/85.jpg",  "flag": "🇮🇪", "caption": "Nemesis" },
+      { "rank": 86, "name": "Layla Torres",      "pts": 5492,  "avatar": "https://randomuser.me/api/portraits/women/86.jpg","flag": "🇳🇿", "caption": "Punisher" },
+      { "rank": 87, "name": "Owen Nguyen",       "pts": 5340,  "avatar": "https://randomuser.me/api/portraits/men/87.jpg",  "flag": "🇸🇬", "caption": "Terminator" },
+      { "rank": 88, "name": "Chloe Hill",        "pts": 5188,  "avatar": "https://randomuser.me/api/portraits/women/88.jpg","flag": "🇲🇾", "caption": "Predator" },
+      { "rank": 89, "name": "Samuel Flores",     "pts": 5035,  "avatar": "https://randomuser.me/api/portraits/men/89.jpg",  "flag": "🇹🇭", "caption": "Hunter" },
+      { "rank": 90, "name": "Victoria Green",    "pts": 4882,  "avatar": "https://randomuser.me/api/portraits/women/90.jpg","flag": "🇻🇳", "caption": "Stalker" },
+      { "rank": 91, "name": "Ryan Adams",        "pts": 4730,  "avatar": "https://randomuser.me/api/portraits/men/91.jpg",  "flag": "🇵🇭", "caption": "Assassin" },
+      { "rank": 92, "name": "Madison Nelson",    "pts": 4578,  "avatar": "https://randomuser.me/api/portraits/women/92.jpg","flag": "🇮🇩", "caption": "Mercenary" },
+      { "rank": 93, "name": "Nathan Baker",      "pts": 4425,  "avatar": "https://randomuser.me/api/portraits/men/93.jpg",  "flag": "🇸🇦", "caption": "Soldier" },
+      { "rank": 94, "name": "Nora Hall",         "pts": 4272,  "avatar": "https://randomuser.me/api/portraits/women/94.jpg","flag": "🇦🇪", "caption": "Warrior" },
+      { "rank": 95, "name": "Leo Rivera",        "pts": 4120,  "avatar": "https://randomuser.me/api/portraits/men/95.jpg",  "flag": "🇮🇱", "caption": "Gladiator" },
+      { "rank": 96, "name": "Riley Campbell",    "pts": 3968,  "avatar": "https://randomuser.me/api/portraits/women/96.jpg","flag": "🇬🇷", "caption": "Spartan" },
+      { "rank": 97, "name": "Caleb Mitchell",    "pts": 3815,  "avatar": "https://randomuser.me/api/portraits/men/97.jpg",  "flag": "🇺🇸", "caption": "Viking" },
+      { "rank": 98, "name": "Zoey Carter",       "pts": 3662,  "avatar": "https://randomuser.me/api/portraits/women/98.jpg","flag": "🇬🇧", "caption": "Samurai" },
+      { "rank": 99, "name": "Isaac Roberts",     "pts": 3510,  "avatar": "https://randomuser.me/api/portraits/men/99.jpg",  "flag": "🇨🇦", "caption": "Ninja" },
+      { "rank": 100,"name": "Hannah Smith",      "pts": 3358,  "avatar": "https://randomuser.me/api/portraits/women/100.jpg","flag": "🇦🇺", "caption": "Ronin" }
+    ];
+
+    // ---------- render ----------
+    (function () {
+      const players = PLAYERS_JSON;
+      const [first_, second_, third_, ...rest] = players;
+      const fmt = n => n.toLocaleString('en-US');
+
+      const initials = name =>
+        name.split(' ').map(w => w[0]).join('').slice(0, 2);
+
+      // --- podium ---
+      document.getElementById('podium').innerHTML = `
+        <div class="champion">
+          <div class="champion-pic">
+            <img src="${first_.avatar}" alt="${first_.name}"
+                 onerror="this.src='https://ui-avatars.com/api/?background=1a2138&color=d4af6a&bold=true&name=${encodeURIComponent(initials(first_.name))}'">
+          </div>
+          <div class="champion-info">
+            <div class="champion-label">Champion</div>
+            <div class="champion-name-row">
+              <span class="champion-name">${first_.name}</span>
+              <span class="flag-icon">${first_.flag}</span>
+            </div>
+            ${first_.caption ? `<div class="champion-caption">“${first_.caption}”</div>` : ''}
+            <div class="champion-pts">
+              <strong>${fmt(first_.pts)}</strong>
+              <span>PTS</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="runners">
+          <div class="runner">
+            <div class="runner-pic" data-rank="2">
+              <img src="${second_.avatar}" alt="${second_.name}"
+                   onerror="this.src='https://ui-avatars.com/api/?background=1a2138&color=8b97ad&bold=true&name=${encodeURIComponent(initials(second_.name))}'">
+            </div>
+            <div class="runner-info">
+              <div class="runner-name-row">
+                <span class="runner-name">${second_.name}</span>
+                <span class="runner-flag">${second_.flag}</span>
+              </div>
+              ${second_.caption ? `<div class="runner-caption">“${second_.caption}”</div>` : ''}
+              <div class="runner-pts">${fmt(second_.pts)} pts</div>
+            </div>
+          </div>
+          <div class="runner">
+            <div class="runner-pic" data-rank="3">
+              <img src="${third_.avatar}" alt="${third_.name}"
+                   onerror="this.src='https://ui-avatars.com/api/?background=1a2138&color=8b97ad&bold=true&name=${encodeURIComponent(initials(third_.name))}'">
+            </div>
+            <div class="runner-info">
+              <div class="runner-name-row">
+                <span class="runner-name">${third_.name}</span>
+                <span class="runner-flag">${third_.flag}</span>
+              </div>
+              ${third_.caption ? `<div class="runner-caption">“${third_.caption}”</div>` : ''}
+              <div class="runner-pts">${fmt(third_.pts)} pts</div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // --- list 4–100 ---
+      document.getElementById('list').innerHTML = rest.map(p => `
+        <div class="row">
+          <div class="row-rank">${p.rank}</div>
+          <div class="row-profile">
+            <img src="${p.avatar}" alt="${p.name}" loading="lazy"
+                 onerror="this.src='https://ui-avatars.com/api/?background=1a2138&color=8b97ad&bold=true&name=${encodeURIComponent(initials(p.name))}'">
+            <div class="row-name-wrap">
+              <div>
+                <div class="row-name">${p.name} <span class="row-flag">${p.flag}</span></div>
+                ${p.caption ? `<div class="row-caption">“${p.caption}”</div>` : ''}
+              </div>
+            </div>
+          </div>
+          <div class="row-pts">${fmt(p.pts)}</div>
+        </div>
+      `).join('');
+    })();
+  </script>
+</body>
+</html>
